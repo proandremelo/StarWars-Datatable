@@ -7,6 +7,7 @@ const COMPARISON = ['maior que', 'menor que', 'igual a'];
 function Filter() {
   const {
     planets,
+    filtereds,
     setFiltereds,
     filters,
     setFilters,
@@ -21,17 +22,35 @@ function Filter() {
     setFilters({ ...filters, [name]: value });
   };
 
-  const handleFilterClick = () => {
-    if (filters.comparison === 'maior que') {
-      setFiltereds(planets
-        .filter((planet) => Number(planet[filters.column]) > Number(filters.value)));
-    } else if (filters.comparison === 'menor que') {
-      setFiltereds(planets
-        .filter((planet) => Number(planet[filters.column]) < Number(filters.value)));
+  const createOrigin = () => {
+    let origin = [];
+    if (filtereds.length > 0) {
+      origin = filtereds;
     } else {
-      setFiltereds(planets
-        .filter((planet) => Number(planet[filters.column]) === Number(filters.value)));
+      origin = planets;
     }
+    return origin;
+  };
+
+  const filterSwitch = (origin) => {
+    if (filters.comparison === 'maior que') {
+      const filter = origin
+        .filter((planet) => Number(planet[filters.column]) > Number(filters.value));
+      setFiltereds(filter);
+    } else if (filters.comparison === 'menor que') {
+      const filter = origin
+        .filter((planet) => Number(planet[filters.column]) < Number(filters.value));
+      setFiltereds(filter);
+    } else {
+      const filter = origin
+        .filter((planet) => Number(planet[filters.column]) === Number(filters.value));
+      setFiltereds(filter);
+    }
+  };
+
+  const handleFilterClick = () => {
+    const origin = createOrigin();
+    filterSwitch(origin);
   };
 
   return (
