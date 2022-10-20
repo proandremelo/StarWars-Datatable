@@ -3,54 +3,73 @@ import React, { useContext } from 'react';
 import TableContext from '../context/TableContext';
 
 const COMPARISON = ['maior que', 'menor que', 'igual a'];
+const COLUMN = [
+  'population',
+  'orbital_period',
+  'diameter',
+  'rotation_period',
+  'surface_water',
+];
 
 function Filter() {
   const {
     planets,
-    filtereds,
-    setFiltereds,
+    filteredPlanets,
+    setFilteredPlanets,
+    actualFilter,
+    setActualFilter,
     filters,
     setFilters,
   } = useContext(TableContext);
 
   const handleFilterByName = ({ target }) => {
-    setFiltereds(planets.filter((planet) => planet.name
+    setFilteredPlanets(planets.filter((planet) => planet.name
       .toLowerCase().includes(target.value.toLowerCase())));
   };
 
   const handleFilterChange = ({ target: { name, value } }) => {
-    setFilters({ ...filters, [name]: value });
+    setActualFilter({ ...actualFilter, [name]: value });
   };
 
   const createOrigin = () => {
+    console.log('filteredPlanets', filteredPlanets);
+    console.log('planets', planets);
     let origin = [];
-    if (filtereds.length > 0) {
-      origin = filtereds;
+    if (filteredPlanets.length > 0) {
+      origin = filteredPlanets;
     } else {
       origin = planets;
     }
     return origin;
   };
 
+  const saveFilter = () => {
+    setFilters([...filters, actualFilter]);
+  };
+
   const filterSwitch = (origin) => {
-    if (filters.comparison === 'maior que') {
-      const filter = origin
-        .filter((planet) => Number(planet[filters.column]) > Number(filters.value));
-      setFiltereds(filter);
-    } else if (filters.comparison === 'menor que') {
-      const filter = origin
-        .filter((planet) => Number(planet[filters.column]) < Number(filters.value));
-      setFiltereds(filter);
+    console.log('origin', origin);
+    if (actualFilter.comparison === 'maior que') {
+      console.log('maior que');
+      const of = origin.filter((planet) => Number(planet[actualFilter.column])
+      > Number(actualFilter.value));
+      console.log('of', of);
+      setFilteredPlanets(of);
+    } else if (actualFilter.comparison === 'menor que') {
+      const of = origin.filter((planet) => Number(planet[actualFilter.column])
+        < Number(actualFilter.value));
+      setFilteredPlanets(of);
     } else {
-      const filter = origin
-        .filter((planet) => Number(planet[filters.column]) === Number(filters.value));
-      setFiltereds(filter);
+      const of = origin.filter((planet) => Number(planet[actualFilter.column])
+        === Number(actualFilter.value));
+      setFilteredPlanets(of);
     }
   };
 
   const handleFilterClick = () => {
     const origin = createOrigin();
     filterSwitch(origin);
+    saveFilter();
   };
 
   return (
@@ -64,19 +83,18 @@ function Filter() {
       </section>
       <select
         name="column"
-        value={ filters.column }
+        value={ actualFilter.column }
         data-testid="column-filter"
         onChange={ handleFilterChange }
       >
-        <option>population</option>
-        <option>orbital_period</option>
-        <option>diameter</option>
-        <option>rotation_period</option>
-        <option>surface_water</option>
+        {COLUMN.filter((col) => {
+          const cols = filters.map((filt) => filt.column);
+          return !cols.includes(col);
+        }).map((option) => <option key={ option }>{ option }</option>)}
       </select>
       <select
         name="comparison"
-        value={ filters.comparison }
+        value={ actualFilter.comparison }
         data-testid="comparison-filter"
         onChange={ handleFilterChange }
       >
@@ -85,7 +103,7 @@ function Filter() {
       <input
         name="value"
         type="number"
-        value={ filters.value }
+        value={ actualFilter.value }
         data-testid="value-filter"
         onChange={ handleFilterChange }
       />

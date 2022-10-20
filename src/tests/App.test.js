@@ -1,15 +1,20 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
+
+import testData from '../../cypress/mocks/testData';
 import App from '../App';
 
 describe('Testes', () => {
-  test('Table', async () => {
-    render(<App />);
-    // const table = await screen.findByRole('table');
-    // expect(table).toBeInTheDocument();
+  test.only('Table', async () => {
+    global.fetch = jest.fn(async () => ({
+      json: async () => testData,
+    }));
+
+    const { debug } = render(<App />);
+    debug();
     await waitFor(() => {
-      expect(screen.getByText('Tatooine')).toBeInTheDocument()
-    })
+      expect(screen.getByText(/Tatooine/i)).toBeInTheDocument()
+    });
     }
   );
   

@@ -3,7 +3,7 @@ import { element } from 'prop-types';
 
 import TableContext from './TableContext';
 
-const INITIAL_FILTERS = {
+const INITIAL_FILTER = {
   column: 'population',
   comparison: 'maior que',
   value: 0,
@@ -11,8 +11,9 @@ const INITIAL_FILTERS = {
 
 function TableProvider({ children }) {
   const [planets, setPlanets] = useState([]);
-  const [filtereds, setFiltereds] = useState([]);
-  const [filters, setFilters] = useState(INITIAL_FILTERS);
+  const [filteredPlanets, setFilteredPlanets] = useState([]);
+  const [actualFilter, setActualFilter] = useState(INITIAL_FILTER);
+  const [filters, setFilters] = useState([]);
 
   useEffect(() => {
     const fetchPlanets = async () => {
@@ -25,12 +26,14 @@ function TableProvider({ children }) {
 
   const dependencies = useMemo(() => ({
     planets,
-    filtereds,
+    filteredPlanets,
+    actualFilter,
     filters,
     setPlanets,
-    setFiltereds,
+    setFilteredPlanets,
+    setActualFilter,
     setFilters,
-  }), [planets, filtereds, filters]);
+  }), [planets, filteredPlanets, actualFilter, filters]);
 
   return (
     <TableContext.Provider value={ dependencies }>
