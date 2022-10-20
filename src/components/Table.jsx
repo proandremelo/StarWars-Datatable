@@ -1,22 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext } from 'react';
+
+import TableContext from '../context/TableContext';
 
 function Table() {
-  const [planets, setPlanets] = useState([]);
-  const [filtereds, setFiltereds] = useState([]);
-
-  useEffect(() => {
-    const fetchPlanets = async () => {
-      const endpoint = 'https://swapi.dev/api/planets';
-      const { results } = await fetch(endpoint).then((data) => data.json());
-      setPlanets(results);
-    };
-    fetchPlanets();
-  }, []);
-
-  const handleFilterByName = ({ target }) => {
-    setFiltereds(planets.filter((planet) => planet.name
-      .toLowerCase().includes(target.value.toLowerCase())));
-  };
+  const { planets, filtereds } = useContext(TableContext);
 
   const renderTableBody = (array) => (
     array.map((planet, index) => (
@@ -27,32 +14,35 @@ function Table() {
       </tr>))
   );
 
+  const renderTableHeader = () => (
+    Object.keys(planets[0]).filter((col) => col !== 'residents')
+      .map((header, index) => <th key={ index }>{header}</th>)
+  );
+
   return (
     <section>
-      <input
-        type="text"
-        data-testid="name-filter"
-        onChange={ handleFilterByName }
-      />
-      {
-        (planets.length > 0) && (
-          <table>
-            <thead>
-              <tr>
-                {Object.keys(planets[0]).filter((col) => col !== 'residents')
-                  .map((header, index) => <th key={ index }>{header}</th>)}
-              </tr>
-            </thead>
-            <tbody>
-              {
-                (filtereds.length > 0)
-                  ? renderTableBody(filtereds)
-                  : renderTableBody(planets)
-              }
-            </tbody>
-          </table>
-        )
-      }
+      <section>
+        {
+          (planets.length > 0) && (
+            <table>
+              <thead>
+                <tr>
+                  {
+                    renderTableHeader()
+                  }
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  (filtereds.length > 0)
+                    ? renderTableBody(filtereds)
+                    : renderTableBody(planets)
+                }
+              </tbody>
+            </table>
+          )
+        }
+      </section>
     </section>
   );
 }
