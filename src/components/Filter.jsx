@@ -3,98 +3,53 @@ import React, { useContext } from 'react';
 import TableContext from '../context/TableContext';
 
 const COMPARISON = ['maior que', 'menor que', 'igual a'];
-const COLUMN = [
-  'population',
-  'orbital_period',
-  'diameter',
-  'rotation_period',
-  'surface_water',
-];
 
 function Filter() {
   const {
-    planets,
-    filteredPlanets,
-    setFilteredPlanets,
+    setNameToFilter,
     actualFilter,
     setActualFilter,
     filters,
     setFilters,
+    column,
+    setColumn,
   } = useContext(TableContext);
-
   const handleFilterByName = ({ target }) => {
-    setFilteredPlanets(planets.filter((planet) => planet.name
-      .toLowerCase().includes(target.value.toLowerCase())));
+    setNameToFilter(target.value);
   };
 
   const handleFilterChange = ({ target: { name, value } }) => {
     setActualFilter({ ...actualFilter, [name]: value });
-    console.log(actualFilter);
   };
-
-  const createOrigin = () => {
-    console.log('filteredPlanets', filteredPlanets);
-    console.log('planets', planets);
-    let origin = [];
-    if (filteredPlanets.length > 0) {
-      origin = filteredPlanets;
-    } else {
-      origin = planets;
-    }
-    return origin;
-  };
-
-  const saveFilter = () => {
-    setFilters([...filters, actualFilter]);
-    const result = COLUMN.filter((col) => {
-      const cols = filters.map((filt) => filt.column);
-      return !cols.includes(col);
-    });
-    setActualFilter({ ...actualFilter, column: result[1] });
-  };
-
-  const filterSwitch = (origin) => {
-    console.log('origin', origin);
-    if (actualFilter.comparison === 'maior que') {
-      console.log('maior que');
-      const of = origin.filter((planet) => Number(planet[actualFilter.column])
-      > Number(actualFilter.value));
-      console.log('of', of);
-      setFilteredPlanets(of);
-    } else if (actualFilter.comparison === 'menor que') {
-      const of = origin.filter((planet) => Number(planet[actualFilter.column])
-        < Number(actualFilter.value));
-      setFilteredPlanets(of);
-    } else {
-      const of = origin.filter((planet) => Number(planet[actualFilter.column])
-        === Number(actualFilter.value));
-      setFilteredPlanets(of);
-    }
-  };
-
-  // const filterSwitch = (origin) => {
-  //   console.log('origin', origin);
-  //   const result = [];
-  //   filters
-  // };
 
   const handleFilterClick = () => {
-    const origin = createOrigin();
-    filterSwitch(origin);
-    saveFilter();
+    console.log(actualFilter);
+    const newFilters = [...filters, actualFilter];
+    setFilters(newFilters);
+    const filteredColumns = column.filter((col) => col !== actualFilter.column);
+    setColumn(filteredColumns);
+    setActualFilter({ ...actualFilter, column: filteredColumns[0] });
   };
 
   const removeFilter = ({ target }) => {
-    setFilters(filters.filter((filt) => filt.column !== target.name));
-    setActualFilter();
+    const newFilteredOption = filters.filter((filt) => filt.column !== target.name);
+    setFilters(newFilteredOption);
+    setActualFilter({ ...actualFilter, column: newFilteredOption[0] });
+    setColumn([...column, target.name]);
   };
 
   const removeAllFilters = () => {
     setFilters([]);
-    setFilteredPlanets([]);
+    setColumn([
+      'population',
+      'orbital_period',
+      'diameter',
+      'rotation_period',
+      'surface_water',
+    ]);
     setActualFilter({
-      column: COLUMN[0],
-      comparison: COMPARISON[0],
+      column: 'population',
+      comparison: 'maior que',
       value: 0,
     });
   };
@@ -115,10 +70,7 @@ function Filter() {
           data-testid="column-filter"
           onChange={ handleFilterChange }
         >
-          {COLUMN.filter((col) => {
-            const cols = filters.map((filt) => filt.column);
-            return !cols.includes(col);
-          }).map((option) => (
+          {column.map((option) => (
             <option
               key={ option }
             >
@@ -159,12 +111,11 @@ function Filter() {
       <section>
         {
           filters.map((filt, index) => (
-            <div key={ index }>
+            <div key={ index } data-testid="filter">
               {`${filt.column} ${filt.comparison} ${filt.value}` }
               <button
                 type="button"
                 name={ filt.column }
-                data-testid="filter"
                 onClick={ removeFilter }
               >
                 Remover

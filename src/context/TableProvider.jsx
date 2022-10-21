@@ -9,11 +9,20 @@ const INITIAL_FILTER = {
   value: 0,
 };
 
+const COLUMN = [
+  'population',
+  'orbital_period',
+  'diameter',
+  'rotation_period',
+  'surface_water',
+];
+
 function TableProvider({ children }) {
   const [planets, setPlanets] = useState([]);
-  const [filteredPlanets, setFilteredPlanets] = useState([]);
   const [actualFilter, setActualFilter] = useState(INITIAL_FILTER);
   const [filters, setFilters] = useState([]);
+  const [column, setColumn] = useState(COLUMN);
+  const [nameToFilter, setNameToFilter] = useState('');
 
   useEffect(() => {
     const fetchPlanets = async () => {
@@ -26,14 +35,16 @@ function TableProvider({ children }) {
 
   const dependencies = useMemo(() => ({
     planets,
-    filteredPlanets,
+    nameToFilter,
     actualFilter,
     filters,
+    column,
     setPlanets,
-    setFilteredPlanets,
+    setNameToFilter,
     setActualFilter,
     setFilters,
-  }), [planets, filteredPlanets, actualFilter, filters]);
+    setColumn,
+  }), [planets, nameToFilter, actualFilter, filters, column]);
 
   return (
     <TableContext.Provider value={ dependencies }>

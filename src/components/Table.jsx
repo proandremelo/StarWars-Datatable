@@ -3,15 +3,35 @@ import React, { useContext } from 'react';
 import TableContext from '../context/TableContext';
 
 function Table() {
-  const { planets, filteredPlanets } = useContext(TableContext);
+  const { planets, filters, nameToFilter } = useContext(TableContext);
 
-  const renderTableBody = (array) => (
-    array.map((planet, index) => (
-      <tr key={ index }>
-        {Object.keys(planet).filter((col) => col !== 'residents')
-          .map((data, i) => (
-            <td data-testid="planet" key={ i }>{ planet[data] }</td>))}
-      </tr>))
+  let of = [...planets];
+  const filterSwitch = () => {
+    filters.forEach((f) => {
+      if (f.comparison === 'maior que') {
+        of = of.filter((planet) => Number(planet[f.column])
+        > Number(f.value));
+      } else if (f.comparison === 'menor que') {
+        of = of.filter((planet) => Number(planet[f.column])
+          < Number(f.value));
+      } else {
+        of = of.filter((planet) => Number(planet[f.column])
+          === Number(f.value));
+      }
+    });
+    return of;
+  };
+
+  const renderTableBody = () => (
+
+    filterSwitch().filter((p) => p.name.toLowerCase()
+      .includes(nameToFilter.toLowerCase()))
+      .map((planet, index) => (
+        <tr key={ index }>
+          {Object.keys(planet).filter((col) => col !== 'residents')
+            .map((data, i) => (
+              <td data-testid="planet" key={ i }>{ planet[data] }</td>))}
+        </tr>))
   );
 
   const renderTableHeader = () => (
@@ -34,9 +54,7 @@ function Table() {
               </thead>
               <tbody>
                 {
-                  (filteredPlanets.length > 0)
-                    ? renderTableBody(filteredPlanets)
-                    : renderTableBody(planets)
+                  renderTableBody()
                 }
               </tbody>
             </table>
