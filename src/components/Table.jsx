@@ -2,6 +2,8 @@ import React, { useContext } from 'react';
 
 import TableContext from '../context/TableContext';
 
+import '../styles/Table.css';
+
 function Table() {
   const { planets, filters, nameToFilter } = useContext(TableContext);
 
@@ -27,11 +29,18 @@ function Table() {
     filterSwitch().filter((p) => p.name.toLowerCase()
       .includes(nameToFilter.toLowerCase()))
       .map((planet, index) => (
-        <tr key={ index }>
+        <div>
+          <tr key={ index }>
           {Object.keys(planet).filter((col) => col !== 'residents')
             .map((data, i) => (
-              <td data-testid="planet" key={ i }>{ planet[data] }</td>))}
-        </tr>))
+              <td data-testid="planet" key={ i }>
+                <div>
+                  { planet[data] }
+                </div>
+              </td>))}
+          </tr>
+        </div>
+        ))
   );
 
   const renderTableHeader = () => (
@@ -46,11 +55,13 @@ function Table() {
           (planets.length > 0) && (
             <table>
               <thead>
-                <tr>
-                  {
-                    renderTableHeader()
-                  }
-                </tr>
+                <div>
+                  <tr>
+                    {
+                      renderTableHeader()
+                    }
+                  </tr>
+                </div>
               </thead>
               <tbody>
                 {

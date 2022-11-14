@@ -2,6 +2,8 @@ import React, { useContext } from 'react';
 
 import TableContext from '../context/TableContext';
 
+import '../styles/Filter.css';
+
 const COMPARISON = ['maior que', 'menor que', 'igual a'];
 
 function Filter() {
@@ -55,15 +57,15 @@ function Filter() {
   };
 
   return (
-    <section>
-      <section>
+    <section className="filter-section">
+      <section className="name-filter">
         <input
           type="text"
           data-testid="name-filter"
           onChange={ handleFilterByName }
         />
       </section>
-      <section>
+      <section className="category-filters">
         <select
           name="column"
           value={ actualFilter.column }
@@ -108,11 +110,11 @@ function Filter() {
           Remover Filtros
         </button>
       </section>
-      <section>
+      <section className="applied-filters">
         {
           filters.map((filt, index) => (
             <div key={ index } data-testid="filter">
-              {`${filt.column} ${filt.comparison} ${filt.value}` }
+              <span>{`${filt.column} ${filt.comparison} ${filt.value}` }</span>
               <button
                 type="button"
                 name={ filt.column }

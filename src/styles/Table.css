@@ -1,0 +1,26 @@
+table {
+  border-collapse: collapse;
+  margin: 1em;
+}
+
+tbody tr, thead {
+  background-color: rgba(112, 112, 112, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+tbody {
+  margin-top: 1em;
+}
+
+thead th {
+  width: 3%;
+}
+
+tbody td {
+  width: 1%;
+}
+
+td div {
+  height: 5em;
+  overflow-y: scroll;
+}

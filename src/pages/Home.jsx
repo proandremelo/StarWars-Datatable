@@ -3,9 +3,11 @@ import React from 'react';
 import Table from '../components/Table';
 import Filter from '../components/Filter';
 
+import '../styles/Home.css';
+
 function Home() {
   return (
-    <section>
+    <section className="home-section">
       <Filter />
       <Table />
     </section>

@@ -1,0 +1,14 @@
+body {
+  background-image: url("../images/deathstar.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.home-section {
+  display: flex;
+  flex-direction: column;
+  height: 97vh;
+  overflow-x: scroll;
+  overflow-y: scroll;
+  width: 100%;
+}
